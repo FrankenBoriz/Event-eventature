@@ -25,26 +25,19 @@ public class EventController {
     public String showEvent(){
 
         String data = null;
+        String data2 = null;
+        String data3 = null;
+        String data4 = null;
+        String data5 = null;
+
+        String sumOfData = null;
+
         int size = 0;
         JsonObject jo = null;
 
         String sURL1 = "https://app.ticketmaster.com/discovery/v2/events.json?apikey=DXHCGjAhb8CoHb0qzeB6Pf2dDLme2WWa";
 
         try {
-            /*
-            URL url = new URL(sURL1);
-            HttpURLConnection request1 = (HttpURLConnection) url.openConnection();
-            request1.connect();
-
-            JsonParser jp = new JsonParser();
-            JsonElement root = jp.parse(new InputStreamReader((InputStream) request1.getContent()));
-            JsonArray rootobj = root.getAsJsonArray();
-            data = rootobj.get(0).getAsJsonObject().toString();
-
-            request1.disconnect();
-            */
-
-
 
             URL url1 = new URL(sURL1);
             HttpURLConnection request1 = (HttpURLConnection) url1.openConnection();
@@ -52,18 +45,46 @@ public class EventController {
 
             JsonParser jp = new JsonParser();
             JsonElement root = jp.parse(new InputStreamReader((InputStream) request1.getContent()));
-            JsonArray rootobj = root.getAsJsonArray();
-            data = jo.getAsJsonObject("_embedded").getAsJsonArray("events").getAsJsonArray().get(0).getAsJsonObject().toString();
+            JsonObject rootobj = root.getAsJsonObject();
+
+            //EventData
+            data = rootobj.getAsJsonObject("_embedded").getAsJsonArray("events")
+                    .getAsJsonArray().get(0).getAsJsonObject().get("name").getAsString();
+
+            data2 = rootobj.getAsJsonObject("_embedded").getAsJsonArray("events")
+                    .getAsJsonArray().get(0).getAsJsonObject().get("id").getAsString();
 
 
-            jo = root.getAsJsonObject();
+            //VenueData
+            data3 = rootobj.getAsJsonObject("_embedded").getAsJsonArray("events")
+                    .getAsJsonArray().get(0).getAsJsonObject().get("_embedded")
+                    .getAsJsonObject().get("venues").getAsJsonArray().get(0).getAsJsonObject()
+                    .get("name").getAsString();
+
+            data4 = rootobj.getAsJsonObject("_embedded").getAsJsonArray("events")
+                    .getAsJsonArray().get(0).getAsJsonObject().get("_embedded")
+                    .getAsJsonObject().get("venues").getAsJsonArray().get(0).getAsJsonObject().get("city").getAsJsonObject().get("name").getAsString();
+
+            data5 = rootobj.getAsJsonObject("_embedded").getAsJsonArray("events")
+                    .getAsJsonArray().get(0).getAsJsonObject().get("_embedded")
+                    .getAsJsonObject().get("venues").getAsJsonArray().get(0).getAsJsonObject().get("country").getAsJsonObject().get("name").getAsString();
+
+
+            //SumData
+            sumOfData ="<h1>Event</h1>" +
+                    "<h2>Event nr: 0</h2>" +
+                    "<h3>Event name: </h3>" + data +
+                    "<br/>" + "<h3>Event ID: </h3> "+ data2  +
+                    "<br/>" + "<h3>Venue Name: </h3>" + data3 +
+                    "<br/>" + "<h3>City: </h3>" + data4 +
+                    "<br/>" + "<h3>Country: </h3>" + data5;
 
             request1.disconnect();
 
         }
         catch(Exception e){}
 
-        return data;
+        return sumOfData;
     }
 
     @RequestMapping("/test")
